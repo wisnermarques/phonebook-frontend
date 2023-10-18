@@ -11,7 +11,7 @@ import 'bootstrap-icons/font/bootstrap-icons.min.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Sobre from './routes/Sobre';
 import Contato from './routes/Contato';
-import Contents from './routes/Home';
+import Home from './routes/Home';
 import Editar from './routes/Editar';
 
 const router = createBrowserRouter([
