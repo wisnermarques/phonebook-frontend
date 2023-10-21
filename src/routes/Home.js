@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import personService from "../services/phonebook";
+import { Link } from "react-router-dom";
 
 function Home() {
   const [persons, setPersons] = useState([]);
@@ -47,6 +48,12 @@ function Home() {
 
   const toggleForm = () => {
     setShowForm(!showForm);
+  };
+
+  const handleDelete = async (id) => {
+    await personService.remove(id);
+    // Após a exclusão, atualize a lista de persons chamando fetchData novamente
+    fetchData();
   };
 
   return (
@@ -98,7 +105,17 @@ function Home() {
                 <td>{person.id}</td>
                 <td>{person.nome}</td>
                 <td>{person.numero}</td>
-                <td></td>
+                <td>
+                  <Link to={`/${person.id}`} className="btn btn-success">
+                    <i className="bi bi-pencil"></i> Editar
+                  </Link>
+                  <button
+                    className="btn btn-danger mx-2"
+                    onClick={() => handleDelete(person.id)}
+                  >
+                    <i className="bi bi-trash3"></i> Excluir
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
