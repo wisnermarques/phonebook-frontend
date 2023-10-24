@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import personService from "../services/phonebook";
+import FormularioEdicao from "../layout/FormularioEdicao"; // Importe o novo componente
 
 function Editar() {
   const { id } = useParams();
@@ -10,9 +11,11 @@ function Editar() {
 
   useEffect(() => {
     personService.getOne(id).then((response) => {
-      setNome(response.data.nome);
-      setNumero(response.data.numero);
+      setNome(response.data[0].nome);
+      setNumero(response.data[0].numero);
+      console.log(response.data)
     });
+    
   }, [id]);
 
   const handleNomeChange = (event) => {
@@ -39,30 +42,13 @@ function Editar() {
   return (
     <div className="container">
       <h2>Edição de Dados</h2>
-      <form onSubmit={editPerson}>
-        <div className="mb-3">
-          <label htmlFor="nome" className="form-label">
-            Nome:
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            defaultValue={nome}
-            onChange={handleNomeChange}
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="numero" className="form-label">
-            Número:
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            onChange={handleNumeroChange}
-          />
-          <button className="btn btn-secondary mt-4">Editar</button>
-        </div>
-      </form>
+      <FormularioEdicao
+        nome={nome}
+        numero={numero}
+        onNomeChange={handleNomeChange}
+        onNumeroChange={handleNumeroChange}
+        onEditar={editPerson}
+      />
     </div>
   );
 }
