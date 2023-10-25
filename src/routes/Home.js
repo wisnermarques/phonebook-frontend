@@ -1,23 +1,43 @@
 import { useEffect, useState } from "react";
 
 import personService from "../services/phonebook";
-import { Link } from "react-router-dom";
+
+import Table from "../layout/Table";
+import Input from "../layout/Input";
 
 function Home() {
   const [persons, setPersons] = useState([]);
   const [nome, setNome] = useState("");
   const [numero, setNumero] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchData(); // Carrega os dados iniciais
   }, []);
 
   const fetchData = () => {
-    personService.getAll().then((response) => {
-      setPersons(response.data);
-      setShowForm(false);
-    });
+    personService
+      .getAll()
+      .then((response) => {
+        setPersons(response.data);
+        setShowForm(false);
+      })
+      .catch((error) => {
+        if (error.response) {
+          // O servidor respondeu com um status de erro
+          console.error("Erro na requisição:", error.response);
+        } else if (error.request) {
+          // A requisição foi feita, mas não houve resposta do servidor
+          console.error("Não foi possível se conectar ao servidor.");
+          setError(
+            "Não foi possível se conectar ao servidor. Verifique sua conexão de rede."
+          );
+        } else {
+          // Algo aconteceu na configuração da requisição que causou o erro
+          console.error("Erro na configuração da requisição:", error.message);
+        }
+      });
   };
 
   const addPerson = async (event) => {
@@ -58,68 +78,51 @@ function Home() {
 
   return (
     <div className="container">
-      <h2>Home</h2>
-      <button onClick={toggleForm} className="btn btn-success">
-        {showForm ? "Voltar para a Tabela" : "Cadastrar Pessoa"}
-      </button>
-
-      {showForm ? (
-        <form onSubmit={addPerson}>
-          <div className="mb-3">
-            <label htmlFor="nome" className="form-label">
-              Nome:
-            </label>
-            <input
-              type="text"
-              placeholder="Digite o seu nome..."
-              className="form-control"
-              onChange={handleNomeChange}
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="telefone" className="form-label">
-              Telefone:
-            </label>
-            <input
-              type="text"
-              placeholder="Digite o seu telefone..."
-              className="form-control"
-              onChange={handleNumeroChange}
-            />
-            <button className="btn btn-success mt-4">Cadastrar</button>
-          </div>
-        </form>
+      <h2 className="mt-2">Listar e Cadastrar Pessoas</h2>
+      {error ? (
+        <p className="alert alert-warning" role="alert">
+          {error}
+        </p>
       ) : (
-        <table className="table table-striped">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Nome</th>
-              <th scope="col">Telefone</th>
-              <th scope="col">Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {persons.map((person) => (
-              <tr key={person.id}>
-                <td>{person.id}</td>
-                <td>{person.nome}</td>
-                <td>{person.numero}</td>
-                <td>
-                  <Link to={`/${person.id}`} className="btn btn-success">
-                    <i className="bi bi-pencil"></i> Editar
-                  </Link>
-                  <button
-                    className="btn btn-danger mx-2"
-                    onClick={() => handleDelete(person.id)}
-                  >
-                    <i className="bi bi-trash3"></i> Excluir
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <>
+          <button onClick={toggleForm} className="btn btn-success">
+            {showForm ? "Voltar para a Tabela" : "Cadastrar Pessoa"}
+          </button>
+
+          {showForm ? (
+            <>
+              <hr />
+              <form onSubmit={addPerson} className="bg-success-subtle p-2">
+                <div className="mb-3">
+                  <Input
+                    textLabel="nome"
+                    text="Nome"
+                    textPlaceholder="Digite o seu nome..."
+                    onChange={handleNomeChange}
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="telefone" className="form-label">
+                    Telefone:
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Digite o seu telefone..."
+                    className="form-control"
+                    onChange={handleNumeroChange}
+                    required
+                  />
+                  <button className="btn btn-success mt-4">Cadastrar</button>
+                </div>
+              </form>
+            </>
+          ) : (
+            <div>
+              <hr />
+              <Table persons={persons} handleDelete={handleDelete} />
+            </div>
+          )}
+        </>
       )}
     </div>
   );

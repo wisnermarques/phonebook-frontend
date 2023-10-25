@@ -36,6 +36,10 @@ function Editar() {
     navigate("/");
   };
 
+  const cancel = () => {
+    navigate("/");
+  };
+
   return (
     <div className="container">
       <h2>Edição de Dados</h2>
@@ -58,9 +62,13 @@ function Editar() {
           <input
             type="text"
             className="form-control"
+            defaultValue={numero}
             onChange={handleNumeroChange}
           />
           <button className="btn btn-secondary mt-4">Editar</button>
+          <button className="btn btn-warning mt-4 mx-3" onClick={cancel}>
+            Cancelar
+          </button>
         </div>
       </form>
     </div>
