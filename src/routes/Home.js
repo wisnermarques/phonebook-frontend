@@ -93,27 +93,22 @@ function Home() {
             <>
               <hr />
               <form onSubmit={addPerson} className="bg-success-subtle p-2">
-                <div className="mb-3">
-                  <Input
-                    textLabel="nome"
-                    text="Nome"
-                    textPlaceholder="Digite o seu nome..."
-                    onChange={handleNomeChange}
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="telefone" className="form-label">
-                    Telefone:
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Digite o seu telefone..."
-                    className="form-control"
-                    onChange={handleNumeroChange}
-                    required
-                  />
-                  <button className="btn btn-success mt-4">Cadastrar</button>
-                </div>
+                <Input
+                  textLabel="nome"
+                  text="Nome"
+                  textPlaceholder="Digite o seu nome..."
+                  handleChange={handleNomeChange}
+                  isPhone={false}
+                />
+                <Input
+                  textLabel="telefone"
+                  text="Telefone"
+                  textPlaceholder="Digite o seu telefone..."
+                  handleChange={handleNumeroChange}
+                  isPhone={true}
+                />
+
+                <button className="btn btn-success mt-4">Cadastrar</button>
               </form>
             </>
           ) : (
